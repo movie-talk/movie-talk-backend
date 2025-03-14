@@ -11,12 +11,21 @@ public class MovieService {
     @Value("${TMDB_API_KEY}")
     private String apiKey;
 
-    private static final String TMDB_API_URL = "https://api.themoviedb.org/3/movie/now_playing";
+    private static final String TMDB_API_URL = "https://api.themoviedb.org/3/movie";
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     public String getNowPlayingMovies() {
-        RestTemplate restTemplate = new RestTemplate();
+        String url = UriComponentsBuilder.fromHttpUrl(TMDB_API_URL + "/now_playing")
+                .queryParam("api_key", apiKey)
+                .queryParam("language", "ko-KR")
+                .toUriString();
 
-        String url = UriComponentsBuilder.fromHttpUrl(TMDB_API_URL)
+        return restTemplate.getForObject(url, String.class);
+    }
+
+    public String getMovieDetails(Long movieId) {
+        String url = UriComponentsBuilder.fromHttpUrl(TMDB_API_URL + "/" + movieId)
                 .queryParam("api_key", apiKey)
                 .queryParam("language", "ko-KR")
                 .toUriString();
@@ -24,3 +33,4 @@ public class MovieService {
         return restTemplate.getForObject(url, String.class);
     }
 }
+
