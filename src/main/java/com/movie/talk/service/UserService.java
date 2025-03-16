@@ -18,6 +18,14 @@ import com.movie.talk.util.UserValidator;
 public class UserService {
     @Autowired
     UserDao userDao;
+    
+    public boolean isIdDuplicate(String id) {
+        return userDao.getUserById(id) != null;
+    }
+
+    public boolean isNicknameDuplicate(String nickname) {
+        return userDao.getUserByNickname(nickname) != null;
+    }
 
     @Transactional
     public void insertUser(SignUpRequest signUpRequest) throws Exception {
@@ -32,14 +40,6 @@ public class UserService {
 
         if (!UserValidator.isValidNickname(signUpRequest.getNickname())) {
             throw new IllegalArgumentException("닉네임은 2~10자, 한글, 영문, 숫자만 포함 가능합니다.");
-        }
-
-        if (userDao.getUserById(signUpRequest.getId()) != null) {
-            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
-        }
-        
-        if (userDao.getUserByNickname(signUpRequest.getNickname()) != null) {
-            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
         }
 
         String passwordSalt = UUID.randomUUID().toString();
