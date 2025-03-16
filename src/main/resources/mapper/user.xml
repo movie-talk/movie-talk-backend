@@ -13,4 +13,13 @@
   	insert into user(id, nickname, password_hash, password_salt) values(#{id}, #{nickname}, #{passwordHash}, #{passwordSalt})
   </insert>
   
+  <resultMap id="userResultMap" type="com.movie.talk.dto.User">
+  	<result column="password_hash" property="passwordHash"/>
+	<result column="password_salt" property="passwordSalt"/>
+  </resultMap>
+	
+  <select id="getUserForLogin" resultMap="userResultMap" parameterType="string">
+    select id, password_hash, password_salt from user where id=#{id}
+  </select>
+
 </mapper>

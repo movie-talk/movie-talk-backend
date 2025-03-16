@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.movie.talk.dao.UserDao;
+import com.movie.talk.dto.LoginRequest;
 import com.movie.talk.dto.SignUpRequest;
 import com.movie.talk.dto.User;
 import com.movie.talk.util.UserValidator;
@@ -48,6 +49,30 @@ public class UserService {
 
         userDao.insertUser(user);
     }
+    
+    @Transactional
+    public User login(LoginRequest loginRequest) throws Exception {
+        if (!UserValidator.isValidId(loginRequest.getId())) {
+            throw new IllegalArgumentException("아이디는 6~12자, 알파벳과 숫자만 포함 가능합니다.");
+        }
+
+        if (!UserValidator.isValidPassword(loginRequest.getPassword())) {
+            throw new IllegalArgumentException("비밀번호는 최소 8자 이상, 알파벳, 숫자, 특수문자를 모두 포함해야 합니다.");
+        }
+
+        User user = userDao.getUserForLogin(loginRequest.getId());
+        if (user == null) {
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 틀립니다.");
+        }
+
+        String passwordHash = hashPassword(loginRequest.getPassword(), user.getPasswordSalt());
+        if (!passwordHash.equals(user.getPasswordHash())) {
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 틀립니다.");
+        }
+
+        return user;
+    }
+
 
     private String hashPassword(String password, String salt) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
