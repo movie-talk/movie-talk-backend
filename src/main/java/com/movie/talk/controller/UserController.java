@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.movie.talk.dto.CheckIdRequest;
+import com.movie.talk.dto.CheckNicknameRequest;
 import com.movie.talk.dto.LoginRequest;
 import com.movie.talk.dto.SignUpRequest;
 import com.movie.talk.dto.User;
@@ -17,6 +19,33 @@ import jakarta.servlet.http.HttpSession;
 public class UserController {
     @Autowired
     private UserService userService;
+    
+    @GetMapping("/check-id")
+    public ResponseEntity<String> checkIdDuplicate(@RequestBody CheckIdRequest checkIdRequest) {
+        try {
+            boolean isDuplicate = userService.isIdDuplicate(checkIdRequest.getId());
+            if (isDuplicate) {
+                return ResponseEntity.status(400).body("중복된 아이디입니다.");
+            }
+            return ResponseEntity.ok("사용 가능한 아이디입니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("서버 오류, 다시 시도해주세요.");
+        }
+    }
+
+    @GetMapping("/check-nickname")
+    public ResponseEntity<String> checkNicknameDuplicate(@RequestBody CheckNicknameRequest checkNicknameRequest) {
+        try {
+            boolean isDuplicate = userService.isNicknameDuplicate(checkNicknameRequest.getNickname());
+            if (isDuplicate) {
+                return ResponseEntity.status(400).body("중복된 닉네임입니다.");
+            }
+            return ResponseEntity.ok("사용 가능한 닉네임입니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("서버 오류, 다시 시도해주세요.");
+        }
+    }
+
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody SignUpRequest signUpRequest) {
