@@ -10,6 +10,7 @@ import com.movie.talk.dto.LoginRequest;
 import com.movie.talk.dto.SignUpRequest;
 import com.movie.talk.dto.User;
 import com.movie.talk.service.UserService;
+import com.shop.shop.dto.Member;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -94,6 +95,16 @@ public class UserController {
 			return ResponseEntity.status(500).body("서버 오류, 다시 시도해주세요.");
 		}
     }
+    
+    @GetMapping("/me")
+	public User getLoggedInUser(HttpServletRequest request) {
+	    HttpSession session = request.getSession(true);
+	    if(session != null) {
+	    	User user = (User) session.getAttribute("user");
+	        return user;
+	    }
+	    return null;
+	}
 
 }
 
