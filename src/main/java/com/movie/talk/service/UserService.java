@@ -37,6 +37,10 @@ public class UserService {
         if (userDao.getUserById(signUpRequest.getId()) != null) {
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
+        
+        if (userDao.getUserByNickname(signUpRequest.getNickname()) != null) {
+            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+        }
 
         String passwordSalt = UUID.randomUUID().toString();
         String passwordHash = hashPassword(signUpRequest.getPassword(), passwordSalt);

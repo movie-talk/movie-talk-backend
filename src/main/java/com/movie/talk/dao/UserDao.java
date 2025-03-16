@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserDao {	
 	User getUserById(String id);
 	
+	User getUserByNickname(String nickname);
+	
 	User getUserForLogin(String id);
 	
 	void insertUser (User user) throws Exception;

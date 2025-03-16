@@ -51,6 +51,20 @@ public class UserController {
             return ResponseEntity.status(500).body("서버 오류, 다시 시도해주세요.");
         }
     }
+    
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+    	try {
+			HttpSession session=request.getSession(false);
+			if(session != null) {
+				session.invalidate();
+			}
+			return ResponseEntity.ok().body("로그아웃 성공");
+		}catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(500).body("서버 오류, 다시 시도해주세요.");
+		}
+    }
 
 }
 
