@@ -9,6 +9,10 @@
     select * from user where id=#{id}
   </select>
   
+  <select id="getUserByNickname" resultType="User" parameterType="string">
+    select * from user where nickname=#{nickname}
+  </select>
+  
   <insert id="insertUser" parameterType="User">
   	insert into user(id, nickname, password_hash, password_salt) values(#{id}, #{nickname}, #{passwordHash}, #{passwordSalt})
   </insert>
