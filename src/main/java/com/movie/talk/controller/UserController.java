@@ -10,7 +10,6 @@ import com.movie.talk.dto.LoginRequest;
 import com.movie.talk.dto.SignUpRequest;
 import com.movie.talk.dto.User;
 import com.movie.talk.service.UserService;
-import com.shop.shop.dto.Member;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -24,10 +23,14 @@ public class UserController {
     @GetMapping("/check-id")
     public ResponseEntity<String> checkIdDuplicate(@RequestBody CheckIdRequest checkIdRequest) {
         try {
+        	if (checkIdRequest.getId() == null || checkIdRequest.getId().isEmpty()) {
+        		return ResponseEntity.status(400).body("아이디를 입력해주세요.");
+        	}
+        	
             boolean isDuplicate = userService.isIdDuplicate(checkIdRequest.getId());
             if (isDuplicate) {
                 return ResponseEntity.status(400).body("중복된 아이디입니다.");
-            }
+            } 
             return ResponseEntity.ok("사용 가능한 아이디입니다.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("서버 오류, 다시 시도해주세요.");
@@ -37,6 +40,10 @@ public class UserController {
     @GetMapping("/check-nickname")
     public ResponseEntity<String> checkNicknameDuplicate(@RequestBody CheckNicknameRequest checkNicknameRequest) {
         try {
+        	if (checkNicknameRequest.getNickname() == null || checkNicknameRequest.getNickname().isEmpty()) {
+        		return ResponseEntity.status(400).body("닉네임을 입력해주세요.");
+        	}
+        	
             boolean isDuplicate = userService.isNicknameDuplicate(checkNicknameRequest.getNickname());
             if (isDuplicate) {
                 return ResponseEntity.status(400).body("중복된 닉네임입니다.");
@@ -69,7 +76,6 @@ public class UserController {
             if (user != null) {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("user", user);
-                
                 return ResponseEntity.ok().body("로그인 성공");
             } else {
                 return ResponseEntity.status(401).body("아이디 또는 비밀번호가 틀립니다.");
