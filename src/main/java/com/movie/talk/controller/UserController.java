@@ -20,7 +20,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     
-    @GetMapping("/check-id")
+    @PostMapping("/check-id")
     public ResponseEntity<String> checkIdDuplicate(@RequestBody CheckIdRequest checkIdRequest) {
         try {
         	if (checkIdRequest.getId() == null || checkIdRequest.getId().isEmpty()) {
@@ -37,7 +37,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/check-nickname")
+    @PostMapping("/check-nickname")
     public ResponseEntity<String> checkNicknameDuplicate(@RequestBody CheckNicknameRequest checkNicknameRequest) {
         try {
         	if (checkNicknameRequest.getNickname() == null || checkNicknameRequest.getNickname().isEmpty()) {
