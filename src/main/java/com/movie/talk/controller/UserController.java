@@ -74,7 +74,7 @@ public class UserController {
             User user = userService.login(loginRequest);
             
             if (user != null) {
-                HttpSession session = request.getSession(true);
+            	HttpSession session = request.getSession(true);
                 session.setAttribute("user", user);
                 return ResponseEntity.ok().body("로그인 성공");
             } else {
