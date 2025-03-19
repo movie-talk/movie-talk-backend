@@ -1,5 +1,9 @@
 package com.movie.talk.controller;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,37 +25,31 @@ public class UserController {
     private UserService userService;
     
     @PostMapping("/check-id")
-    public ResponseEntity<String> checkIdDuplicate(@RequestBody CheckIdRequest checkIdRequest) {
-        try {
-        	if (checkIdRequest.getId() == null || checkIdRequest.getId().isEmpty()) {
-        		return ResponseEntity.status(400).body("아이디를 입력해주세요.");
-        	}
-        	
-            boolean isDuplicate = userService.isIdDuplicate(checkIdRequest.getId());
-            if (isDuplicate) {
-                return ResponseEntity.status(400).body("중복된 아이디입니다.");
-            } 
-            return ResponseEntity.ok("사용 가능한 아이디입니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("서버 오류, 다시 시도해주세요.");
+    public ResponseEntity<Map<String, Boolean>> checkIdDuplicate(@RequestBody CheckIdRequest checkIdRequest) {
+        Map<String, Boolean> response = new HashMap<>();
+
+        if (checkIdRequest.getId() == null || checkIdRequest.getId().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("error", true));
         }
+
+        boolean isDuplicate = userService.isIdDuplicate(checkIdRequest.getId());
+        response.put("exists", isDuplicate); // 중복이면 true, 아니면 false
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/check-nickname")
-    public ResponseEntity<String> checkNicknameDuplicate(@RequestBody CheckNicknameRequest checkNicknameRequest) {
-        try {
-        	if (checkNicknameRequest.getNickname() == null || checkNicknameRequest.getNickname().isEmpty()) {
-        		return ResponseEntity.status(400).body("닉네임을 입력해주세요.");
-        	}
-        	
-            boolean isDuplicate = userService.isNicknameDuplicate(checkNicknameRequest.getNickname());
-            if (isDuplicate) {
-                return ResponseEntity.status(400).body("중복된 닉네임입니다.");
-            }
-            return ResponseEntity.ok("사용 가능한 닉네임입니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("서버 오류, 다시 시도해주세요.");
+    public ResponseEntity<Map<String, Boolean>> checkNicknameDuplicate(@RequestBody CheckNicknameRequest checkNicknameRequest) {
+        Map<String, Boolean> response = new HashMap<>();
+
+        if (checkNicknameRequest.getNickname() == null || checkNicknameRequest.getNickname().isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("error", true));
         }
+
+        boolean isDuplicate = userService.isNicknameDuplicate(checkNicknameRequest.getNickname());
+        response.put("exists", isDuplicate); // 중복이면 true, 아니면 false
+
+        return ResponseEntity.ok(response);
     }
 
 
