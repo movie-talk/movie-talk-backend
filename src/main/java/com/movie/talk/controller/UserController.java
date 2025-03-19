@@ -103,14 +103,10 @@ public class UserController {
     }
     
     @GetMapping("/me")
-	public User getLoggedInUser(HttpServletRequest request) {
-	    HttpSession session = request.getSession(true);
-	    if(session != null) {
-	    	User user = (User) session.getAttribute("user");
-	        return user;
-	    }
-	    return null;
-	}
+    public boolean isLoggedIn(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        return session != null && session.getAttribute("user") != null;
+    }
 
 }
 
