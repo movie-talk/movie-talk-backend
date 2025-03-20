@@ -6,7 +6,7 @@
 <mapper namespace="com.movie.talk.dao.UserDao">
 
   <select id="getUserById" resultType="User" parameterType="string">
-    select * from user where id=#{id}
+    select id, nickname from user where id=#{id}
   </select>
   
   <select id="getUserByNickname" resultType="User" parameterType="string">
