@@ -15,7 +15,9 @@ import com.movie.talk.dto.SignUpRequest;
 import com.movie.talk.dto.User;
 import com.movie.talk.service.UserService;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
@@ -87,12 +89,21 @@ public class UserController {
     }
     
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
     	try {
 			HttpSession session=request.getSession(false);
 			if(session != null) {
 				session.invalidate();
 			}
+			
+			Cookie cookie = new Cookie("JSESSIONID", null);
+			cookie.setMaxAge(0);
+			cookie.setPath("/");
+			cookie.setHttpOnly(true);
+			cookie.setSecure(true);
+
+			response.addCookie(cookie);
+	        
 			return ResponseEntity.ok().body("로그아웃 성공");
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -101,10 +112,13 @@ public class UserController {
     }
     
     @GetMapping("/me")
-    public boolean isLoggedIn(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        return session != null && session.getAttribute("user") != null;
-    }
-
+ 	public User getLoggedInUser(HttpServletRequest request) {
+ 	    HttpSession session = request.getSession(true);
+ 	    if(session != null) {
+ 	    	User user = (User) session.getAttribute("user");
+ 	        return user;
+ 	    }
+ 	    return null;
+ 	}
 }
 
